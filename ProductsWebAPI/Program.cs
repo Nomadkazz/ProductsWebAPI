@@ -13,9 +13,19 @@ builder.Services.AddScoped<IDataService, DataService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder.AllowAnyOrigin();
+            builder.AllowAnyHeader();
+            builder.AllowAnyMethod();
+        });
+});
 var app = builder.Build();
 
+app.UseCors(options => options.AllowAnyOrigin());   
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

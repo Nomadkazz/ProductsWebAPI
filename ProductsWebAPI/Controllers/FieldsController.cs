@@ -30,7 +30,7 @@ namespace ProductsWebAPI.Controllers
         /*
          Returns specified field if exists, else Error 404
          */
-        [HttpGet("{fieldId}")]
+        /*[HttpGet("{fieldId}")]
         [ActionName(nameof(GetField))]
         public ActionResult<ProductFieldModel> GetField(int fieldId)
         {
@@ -42,10 +42,10 @@ namespace ProductsWebAPI.Controllers
             }
 
             return propductField;
-        }
+        }*/
 
         /*
-         Returns all the fields created for the category, else Error 404
+         Returns all the fields created for the category, else empty list
          */
         [HttpGet("category/{categoryId}")]
         public ActionResult<List<ProductFieldModel>> GetFieldsByCategory(int categoryId)
@@ -54,7 +54,7 @@ namespace ProductsWebAPI.Controllers
 
             if (fields == null || !fields.Any())
             {
-                return NotFound();
+                return new List<ProductFieldModel>();
             }
 
             return fields;
@@ -78,7 +78,7 @@ namespace ProductsWebAPI.Controllers
         /*
          Deletes the field
          */
-        [HttpDelete("{id}")]
+        /*[HttpDelete("{id}")]
         public ActionResult<int> DeleteField(int id)
         {
             var field = _productsService.DeleteProductField(id);
@@ -88,6 +88,6 @@ namespace ProductsWebAPI.Controllers
                 return NotFound();
             }
             return field;
-        }
+        }*/
     }
 }

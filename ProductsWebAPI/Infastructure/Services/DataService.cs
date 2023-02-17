@@ -19,6 +19,7 @@ namespace ProductsWebAPI.Infastructure.Services
         {
             var alist = _context.Categories.Select(c => new CategoryModel
             {
+                 Id= c.Id,
                  Name = c.Name,                 
             })
                 .ToList();
@@ -27,36 +28,20 @@ namespace ProductsWebAPI.Infastructure.Services
             Console.WriteLine(alist);
 
             return alist;
-        }
-        public List<CategoryModel> GetCategoriesWithFields()
-        {
-            var alist = _context.Categories.Select(c => new CategoryModel
-            {
-                Name = c.Name,
-                Fields = c.Fields.Select(pf => new ProductFieldModel
-                {
-                    Name = pf.Name
-                }).ToList()
-            })
-            .ToList();
-
-            Console.WriteLine(alist);
-
-            return alist;
-        }
+        }        
 
         public CategoryModel GetCategoryById(int categoryId)
         {
             var category = _context.Categories.Find(categoryId);
-            var fields = GetFieldsForCategory(categoryId);
+            //var fields = GetFieldsForCategory(categoryId);
 
             if (category == null){
                 return null;
             }
             var categoryModel = new CategoryModel()
             {
+                Id = category.Id,
                 Name = category.Name,
-                Fields = fields
             };
 
             return categoryModel;
@@ -66,6 +51,7 @@ namespace ProductsWebAPI.Infastructure.Services
         {
             return _context.ProductFields.Select(c => new ProductFieldModel
             {
+                Id = c.Id,
                 Name = c.Name,
             })
                 .ToList();
@@ -77,8 +63,10 @@ namespace ProductsWebAPI.Infastructure.Services
             var alist = _context.ProductFields.Where(pf => pf.CategoryId == categoryId)
                 .Select(pf => new ProductFieldModel
                 {
-                            Name = pf.Name,
-                        })
+                    Id = pf.Id,
+                    Name = pf.Name,
+                        
+                })
                 .ToList();
 
             return alist;
@@ -89,7 +77,9 @@ namespace ProductsWebAPI.Infastructure.Services
             var fieldValues = _context.ProductFieldValues.Where(fv => fv.ProductId == productId)
                 .Select(fv => new ProductFieldValueModel
                 {
+                    Id = fv.Id,
                     Value = fv.Value,
+                  //  FieldId = fv.FieldId
                 })
                 .ToList();
 
@@ -107,6 +97,7 @@ namespace ProductsWebAPI.Infastructure.Services
             };
             var productModel = new ProductModel()
             {
+                Id = product.Id,
                 Name = product.Name,
                 Description = product.Description,
                 Price = product.Price,
@@ -118,25 +109,12 @@ namespace ProductsWebAPI.Infastructure.Services
             return productModel;
         }
 
-        public ProductFieldModel GetProductFieldById(int productFieldId)
-        {
-            var entity = _context.ProductFields.Find(productFieldId);
-            if(entity == null)
-            {
-                return null;
-            };
-            var productFieldModel = new ProductFieldModel()
-            {
-                Name = entity.Name
-            };
-
-            return productFieldModel;
-        }
 
         public List<ProductModel> GetProducts()
         {
             var alist = _context.Products.Select(p => new ProductModel
             {
+                Id = p.Id,
                 Name = p.Name,
                 Description = p.Description,
                 Price = p.Price,
@@ -149,6 +127,54 @@ namespace ProductsWebAPI.Infastructure.Services
             Console.WriteLine(alist);
 
             return alist;
+        }
+
+        public List<ProductModel> GetProductsByCategory(int categoryId)
+        {
+            var list = _context.Products.Where(p => p.CategoryId == categoryId)
+                .Select(product =>
+                        new ProductModel
+                        {
+                            Id = product.Id,
+                            Name = product.Name,
+                            Description = product.Description,
+                            Price = product.Price,
+                            PhotoUrl = product.PhotoUrl,
+                            CategoryId = product.CategoryId,
+                            FieldValues = product.FieldValues
+                            .Select(v => new ProductFieldValueModel
+                            {
+                                Id = v.Id,
+                                Value = v.Value,
+
+                            }).ToList()
+                        }
+                        )
+                .ToList();
+            return list;
+        }
+
+        public List<ProductModel> GetProductsByField(int fieldId)
+        {
+            List<ProductModel> products = _context.ProductFieldValues.Where(fv => fv.FieldId == fieldId)
+                .Select(fv => new ProductModel()
+                {
+                    Id = fv.Id,
+                    Name = fv.Product.Name,
+                    Description = fv.Product.Description,
+                    Price = fv.Product.Price,
+                    PhotoUrl = fv.Product.PhotoUrl,
+                    CategoryId = fv.Product.CategoryId,
+                    FieldValues = fv.Product.FieldValues
+                    .Select(v => new ProductFieldValueModel
+                    {
+                        Id = v.Id,
+                        Value = v.Value,
+
+                    }).ToList()
+                }).ToList();
+
+            return products;
         }
 
         public int AddCategory(CategoryModel category)
@@ -165,7 +191,11 @@ namespace ProductsWebAPI.Infastructure.Services
 
         public int AddField(ProductFieldModel productField, int categoryId)
         {
-
+            var category = GetCategoryById(categoryId);
+            if (category== null)
+            {
+                return 0;
+            };
             ProductField entity = new ProductField()
             {
                 Name = productField.Name,
@@ -210,7 +240,7 @@ namespace ProductsWebAPI.Infastructure.Services
                 );
                 _context.SaveChanges();
             }
-            //_context.SaveChanges();
+            _context.SaveChanges();
 
             return productEntity.Id;
         }
@@ -241,18 +271,6 @@ namespace ProductsWebAPI.Infastructure.Services
             return 1;
         }
 
-        public int DeleteProductField(int productFieldId)
-        {
-            var productField = _context.ProductFields.Find(productFieldId);
-
-            if (productField == null)
-            {
-                return 0;
-            }
-            _context.ProductFields.Remove(productField);
-            _context.SaveChanges();
-            return 1;
-        }
 
     }
 }

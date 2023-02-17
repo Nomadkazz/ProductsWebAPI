@@ -8,9 +8,11 @@ namespace ProductsWebAPI.Infastructure.Interfaces
         List<ProductModel> GetProducts();
         List<CategoryModel> GetCategories();
         List<ProductFieldModel> GetFields();
+        List<ProductModel> GetProductsByCategory(int categoryId);
+        List<ProductModel> GetProductsByField(int fieldId);
         ProductModel GetProductById(int productId);
         CategoryModel GetCategoryById(int categoryId);
-        ProductFieldModel GetProductFieldById(int productFieldId);
+        //ProductFieldModel GetProductFieldById(int productFieldId);
         List<ProductFieldModel> GetFieldsForCategory(int categoryId);
         List<ProductFieldValueModel> GetFieldsValuesForProduct(int productId);
 
@@ -22,7 +24,7 @@ namespace ProductsWebAPI.Infastructure.Interfaces
 
         //Delete
         int DeleteCategory(int categoryId);
-        int DeleteProductField(int productFieldId);
+        //int DeleteProductField(int productFieldId);
         int DeleteProduct(int productId);
 
     }

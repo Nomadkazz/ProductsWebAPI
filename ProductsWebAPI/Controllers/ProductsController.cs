@@ -43,6 +43,37 @@ namespace ProductsWebAPI.Controllers
         }
 
         /*
+         Returns products in the category if exists, else Error 404
+         */
+        [HttpGet("category/{id}")]
+        public ActionResult<List<ProductModel>> GetProductsByCategory(int id)
+        {
+            var product = _productsService.GetProductsByCategory(id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return product;
+        }
+
+        /*
+         Returns products in the categoryi f exists, else Error 404
+         */
+        [HttpGet("field/{id}")]
+        public ActionResult<List<ProductModel>> GetProductsByField(int id)
+        {
+            var product = _productsService.GetProductsByField(id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return product;
+        }
+        /*
          Adds a new product in to the database returns new product's Id
          */
         [HttpPost]
