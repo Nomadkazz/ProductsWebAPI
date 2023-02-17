@@ -2,17 +2,20 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductsWebAPI.Data;
 
 #nullable disable
 
-namespace ProductsWebAPI.Data.Migrations
+namespace ProductsWebAPI.Infastructure.Data.Migrations
 {
     [DbContext(typeof(ProductsContext))]
-    partial class ProductsContextModelSnapshot : ModelSnapshot
+    [Migration("20230217131540_createdatabase")]
+    partial class createdatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,7 +24,7 @@ namespace ProductsWebAPI.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ProductsWebAPI.Models.Category", b =>
+            modelBuilder.Entity("ProductsWebAPI.ApplicationCore.Entities.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -38,7 +41,7 @@ namespace ProductsWebAPI.Data.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("ProductsWebAPI.Models.Product", b =>
+            modelBuilder.Entity("ProductsWebAPI.ApplicationCore.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -57,7 +60,7 @@ namespace ProductsWebAPI.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Photo")
+                    b.Property<string>("PhotoUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -66,10 +69,12 @@ namespace ProductsWebAPI.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("ProductsWebAPI.Models.ProductField", b =>
+            modelBuilder.Entity("ProductsWebAPI.ApplicationCore.Entities.ProductField", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -86,10 +91,12 @@ namespace ProductsWebAPI.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("ProductFields");
                 });
 
-            modelBuilder.Entity("ProductsWebAPI.Models.ProductFieldValue", b =>
+            modelBuilder.Entity("ProductsWebAPI.ApplicationCore.Entities.ProductFieldValue", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -109,7 +116,67 @@ namespace ProductsWebAPI.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("FieldId");
+
+                    b.HasIndex("ProductId");
+
                     b.ToTable("ProductFieldValues");
+                });
+
+            modelBuilder.Entity("ProductsWebAPI.ApplicationCore.Entities.Product", b =>
+                {
+                    b.HasOne("ProductsWebAPI.ApplicationCore.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("ProductsWebAPI.ApplicationCore.Entities.ProductField", b =>
+                {
+                    b.HasOne("ProductsWebAPI.ApplicationCore.Entities.Category", "Category")
+                        .WithMany("Fields")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("ProductsWebAPI.ApplicationCore.Entities.ProductFieldValue", b =>
+                {
+                    b.HasOne("ProductsWebAPI.ApplicationCore.Entities.ProductField", "Field")
+                        .WithMany("ProductFieldValues")
+                        .HasForeignKey("FieldId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProductsWebAPI.ApplicationCore.Entities.Product", "Product")
+                        .WithMany("FieldValues")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Field");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("ProductsWebAPI.ApplicationCore.Entities.Category", b =>
+                {
+                    b.Navigation("Fields");
+                });
+
+            modelBuilder.Entity("ProductsWebAPI.ApplicationCore.Entities.Product", b =>
+                {
+                    b.Navigation("FieldValues");
+                });
+
+            modelBuilder.Entity("ProductsWebAPI.ApplicationCore.Entities.ProductField", b =>
+                {
+                    b.Navigation("ProductFieldValues");
                 });
 #pragma warning restore 612, 618
         }

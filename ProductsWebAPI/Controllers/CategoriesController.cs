@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProductsWebAPI.Data;
+using ProductsWebAPI.Infastructure.Interfaces;
+using ProductsWebAPI.Infastructure.Services;
 using ProductsWebAPI.Models;
-using System.Reflection.Metadata.Ecma335;
 
 namespace ProductsWebAPI.Controllers
 {
@@ -11,29 +10,32 @@ namespace ProductsWebAPI.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private readonly ProductsContext _context;
+        private readonly IDataService _productsService;
 
-        public CategoriesController(ProductsContext context)
+        public CategoriesController(IDataService productsService)
         {
-            _context = context;
+            _productsService = productsService;
         }
 
         /*
          Returns all categories
          */
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
+        public ActionResult<List<CategoryModel>> GetCategories()
         {
-            return await _context.Categories.ToListAsync();
+
+            Console.WriteLine("IN COntroller get all");
+            Console.WriteLine(_productsService);
+            return _productsService.GetCategories();
         }
 
         /*
          Returns specified category if exists, else Error 404
          */
         [HttpGet("{id}")]
-        public async Task<ActionResult<Category>> GetCategory(int id)
+        public ActionResult<CategoryModel> GetCategory(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
+            var category = _productsService.GetCategoryById(id);
 
             if (category == null)
             {
@@ -48,34 +50,19 @@ namespace ProductsWebAPI.Controllers
          Adds new category in to the database and returns its Id
          */
         [HttpPost]
-        public async Task<ActionResult<Category>> CreateCategory(Category category)
+        public ActionResult<int> CreateCategory(CategoryModel category)
         {
-            if (category == null)
-            {
-                return NotFound();
-            }
-            await _context.Categories.AddAsync(category);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetCategory), new { id = category.Id }, category);
+            return _productsService.AddCategory(category);
         }
 
         /*
          Deletes the category from the database
          */
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory(int id)
+        public ActionResult<int> DeleteCategory(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-
-            if (category == null)
-            {
-                return NotFound();
-            }
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return _productsService.DeleteCategory(id);
         }
     }
 }

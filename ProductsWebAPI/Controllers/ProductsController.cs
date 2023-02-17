@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProductsWebAPI.Data;
+using ProductsWebAPI.Infastructure.Interfaces;
 using ProductsWebAPI.Models;
 
 namespace ProductsWebAPI.Controllers
@@ -10,29 +10,29 @@ namespace ProductsWebAPI.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly ProductsContext _context;
+        private readonly IDataService _productsService;
 
-        public ProductsController(ProductsContext context)
+        public ProductsController(IDataService productsService)
         {
-            _context = context;
+            _productsService = productsService;
         }
 
         /*
          Returns all products
          */
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+        public ActionResult<List<ProductModel>> GetProducts()
         {
-            return await _context.Products.ToListAsync();
+            return _productsService.GetProducts();
         }
 
         /*
          Returns specified product if exists, else Error 404
          */
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(int id)
+        public ActionResult<ProductModel> GetProduct(int id)
         {
-            var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
+            var product = _productsService.GetProductById(id);
 
             if (product == null)
             {
@@ -46,13 +46,14 @@ namespace ProductsWebAPI.Controllers
          Adds a new product in to the database returns new product's Id
          */
         [HttpPost]
-        public async Task<ActionResult<Product>> CreateProduct(Product product)
+        public ActionResult<int> CreateProduct(ProductModel product)
         {
-            
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
+            if (product == null)
+            {
+                return NotFound();
+            }
 
-            return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
+            return _productsService.AddProduct(product, product.FieldValues);
         }
 
     }

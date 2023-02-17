@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProductsWebAPI.Data;
+using ProductsWebAPI.Infastructure.Interfaces;
+using ProductsWebAPI.Infastructure.Services;
 using ProductsWebAPI.Models;
 using System.Collections.Generic;
 
@@ -10,20 +11,20 @@ namespace ProductsWebAPI.Controllers
     [ApiController]
     public class FieldsController : ControllerBase
     {
-        private readonly ProductsContext _context;
+        private readonly IDataService _productsService;
 
-        public FieldsController(ProductsContext context)
+        public FieldsController(IDataService productsService)
         {
-            _context = context;
+            _productsService = productsService;
         }
 
         /*
          Returns all fields
          */
         [HttpGet]
-        public async Task<ActionResult<List<ProductField>>> GetFields()
+        public ActionResult<List<ProductFieldModel>> GetFields()
         {
-            return await _context.ProductFields.ToListAsync();
+            return _productsService.GetFields();
         }
 
         /*
@@ -31,9 +32,9 @@ namespace ProductsWebAPI.Controllers
          */
         [HttpGet("{fieldId}")]
         [ActionName(nameof(GetField))]
-        public async Task<ActionResult<ProductField>> GetField(int fieldId)
+        public ActionResult<ProductFieldModel> GetField(int fieldId)
         {
-            var propductField = await _context.ProductFields.FindAsync(fieldId);
+            var propductField = _productsService.GetProductFieldById(fieldId);
 
             if (propductField == null)
             {
@@ -47,17 +48,16 @@ namespace ProductsWebAPI.Controllers
          Returns all the fields created for the category, else Error 404
          */
         [HttpGet("category/{categoryId}")]
-        public async Task<ActionResult<List<ProductField>>> GetFieldsByCategory(int categoryId)
+        public ActionResult<List<ProductFieldModel>> GetFieldsByCategory(int categoryId)
         {
-            
-            var category = await _context.ProductFields.Where(pf => pf.CategoryId == categoryId).ToListAsync();
-            //var category = _context.Categories.Include(c => c.Fields).FirstOrDefault(c => c.Id == categoryId);
-            if (category == null)
+            var fields = _productsService.GetFieldsForCategory  (categoryId);
+
+            if (fields == null || !fields.Any())
             {
                 return NotFound();
             }
 
-            return category;
+            return fields;
 
         }
 
@@ -65,46 +65,29 @@ namespace ProductsWebAPI.Controllers
          Adds a new field for the category and returns its Id
          */
         [HttpPost("category/{categoryId}")]
-        public async Task<ActionResult<ProductField>> CreateField(int categoryId, ProductField fieldInput)
+        public ActionResult<int> CreateField(int categoryId, ProductFieldModel field)
         {
-            var category = await _context.Categories.FindAsync(categoryId);
-            if (category == null)
+            if (field == null)
             {
                 return NotFound();
             }
 
-            /*var productfield = new ProductField
-            {
-                Name = fieldInput.Name,                
-                CategoryId = categoryId
-            };*/
-            Console.WriteLine(category);
-            /*var fields = new List<ProductField>();
-            fields.Append(fieldInput);
-            category.Fields = fields;*/
-            _context.Categories.Update(category);
-            _context.ProductFields.Add(fieldInput);
-            _context.SaveChanges();
-
-            return CreatedAtAction("GetField", new { id = fieldInput.Id }, fieldInput);
+            return _productsService.AddField(field, categoryId);
         }
 
         /*
          Deletes the field
          */
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteField(int id)
+        public ActionResult<int> DeleteField(int id)
         {
-            var field = await _context.ProductFields.FindAsync(id);
+            var field = _productsService.DeleteProductField(id);
 
-            if (field == null)
+            if (field == 0)
             {
                 return NotFound();
             }
-            _context.ProductFields.Remove(field);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return field;
         }
     }
 }
