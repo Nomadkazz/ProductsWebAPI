@@ -4,7 +4,7 @@ export class Product{
   name:string
   description:string;
   price:number;
-  photo_url:string;
-  category_id:number;
-  field_values:FieldValue[];
+  photoUrl:string;
+  categoryId:number;
+  fieldValues:FieldValue[];
 }

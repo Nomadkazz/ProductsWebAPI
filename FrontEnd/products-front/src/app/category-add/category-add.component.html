@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container mt-5">
   <h1>New Category</h1>
   <form>
     <div class="mb-3">
@@ -9,7 +9,7 @@
       <label class="form-label">Field Name</label>
       <input [(ngModel)]="field.name" type="text" name="new-field" class="form-control">
     </div>
-    <button (click)="newField()" class="btn btn-secondary">Add field</button>
+    <button (click)="newField()" class="btn btn-secondary">+Add field</button>
     <button *ngIf="fields.length > 0" (click)="removeField()" class="btn ms-5 btn-secondary">Remove field</button>
 
   </form>

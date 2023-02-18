@@ -31,6 +31,10 @@ export class DataService {
     return this.http.get<Product[]>(this.backend_url + "products/category/" + id);
   }
 
+  getProductsById(id:number):Observable<Product>{
+    return this.http.get<Product>(this.backend_url + "products/" + id);
+  }
+
   getProductsByFields(id:number):Observable<Product[]>{
     return this.http.get<Product[]>(this.backend_url + "products/field/" + id);
   }
@@ -41,16 +45,16 @@ export class DataService {
 
   postCategory(category:Category):Observable<number>{
     return this.http.post<number>(this.backend_url + "categories/", category)
-    .pipe(
+    //.pipe(
       //catchError(this.handleError('addCategory', category))
-    );
+    //);
   }
 
   postField(field:Field,categoryId:number):Observable<number>{
     return this.http.post<number>(this.backend_url + "fields/category/" + categoryId, field)
-    .pipe(
+    //.pipe(
       //catchError(this.handleError('addCategory', category))
-    );
+    //);
   }
 
   postProduct(product:Product):Observable<number>{
@@ -58,5 +62,12 @@ export class DataService {
     // .pipe(
     //   //catchError(this.handleError('addCategory', category))
     // );
+  }
+
+  deleteCategory(categoryId:number):Observable<number>{
+    return this.http.delete<number>(this.backend_url + "categories/" + categoryId, {})
+    //.pipe(
+      //catchError(this.handleError('addCategory', category))
+    //);
   }
 }

@@ -1,12 +1,13 @@
-<div class="container">
+<div class="container mt-5">
 
     <div class="d-flex justify-content-between align-items-end">
-      <h1 class="mt-5">Products</h1>
+      <h1>Products</h1>
       <a type="button" routerLink="add" class="btn btn-primary btn-lg">+Add</a>
     </div>
-    Categories:
+    Filter by category:
     <select [(ngModel)]="_selectedCategory" (ngModelChange)="onCategoryChange($event)" class="form-select form-select-sm" aria-label=".form-select-sm example">
 
+      <option [ngValue]="null">All</option>
       <option *ngFor="let category of categories;" [ngValue]="category">{{category.name}}</option>
     </select>
 
@@ -20,9 +21,8 @@
     <ul class="list-group mt-5">
       <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let product of products;">
         {{product.name}}
-        <button class="badge bg-primary rounded-pill">
-          <span class="p-3 badge bg-primary rounded-pill"></span>
-        </button>
+
+        <button [routerLink]=[product.id] type="button" class="btn btn-info">Info</button>
       </li>
     </ul>
 </div>

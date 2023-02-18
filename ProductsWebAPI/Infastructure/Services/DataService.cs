@@ -224,9 +224,10 @@ namespace ProductsWebAPI.Infastructure.Services
             _context.Products.Add(productEntity);
             _context.SaveChanges();
 
-            if (productFieldValues != null || !productFieldValues.Any())
+            ProductField field = _context.ProductFields.Where(pf => pf.CategoryId == product.CategoryId).FirstOrDefault();
+            if (field != null && productFieldValues != null)
             {
-                int fieldId = _context.ProductFields.Where(pf => pf.CategoryId == product.CategoryId).FirstOrDefault().Id;
+                int fieldId = field.Id;
                 productFieldValues.ForEach(fieldValue =>
                 {
                     ProductFieldValue productFieldValueEntity = new ProductFieldValue()
@@ -238,7 +239,6 @@ namespace ProductsWebAPI.Infastructure.Services
                     _context.ProductFieldValues.Add(productFieldValueEntity);
                 }
                 );
-                _context.SaveChanges();
             }
             _context.SaveChanges();
 

@@ -8,44 +8,38 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-product',
-  templateUrl: './product.component.html',
-  styleUrls: ['./product.component.scss']
+  templateUrl: './product-list.component.html',
+  styleUrls: ['./product-list.component.scss']
 })
-export class ProductComponent implements OnInit {
+export class ProductListComponent implements OnInit {
 
   _dataService: DataService;
   products:Product[];
   categories:Category[];
   fields:Field[];
-  _selectedCategory:Category;
+  _selectedCategory:Category=null;
   selectedField:Field;
 
-  get selectedCategory(): Category {
-    return this._selectedCategory;
-  }
-  set selectedCategory(value: Category) {
-      if (value !== this._selectedCategory) {
-          this._selectedCategory = value;
-          this.getFields()
-          this.getProductsByCategory()
-      }
-  }
-
-  constructor(dataService:DataService) {
+  constructor(dataService:DataService, router:Router) {
     this._dataService = dataService;
-    this._dataService.getAllProducts().subscribe(data =>{
-      console.log(data)
-      this.products =data
-    })
+
+    this.getAllProducts();
+
     this._dataService.getAllCategories().subscribe(data =>{
       console.log(data)
       this.categories =data
-      //this.categories.length > 0 ? this.selectedCategory = this.categories[0] : this.selectedCategory = null ;
     })
 
   }
 
   ngOnInit(): void {
+  }
+
+  getAllProducts(){
+    this._dataService.getAllProducts().subscribe(data =>{
+      console.log(data)
+      this.products =data
+    })
   }
 
   getFields(){
@@ -61,8 +55,13 @@ export class ProductComponent implements OnInit {
   }
 
   onCategoryChange(newValue){
-    this.getFields()
-    this.getProductsByCategory()
+    console.log(newValue)
+    if(this._selectedCategory == null){
+      this.getAllProducts()
+    }else{
+      this.getFields()
+      this.getProductsByCategory()
+    }
   }
 
   getProductsByCategory(){

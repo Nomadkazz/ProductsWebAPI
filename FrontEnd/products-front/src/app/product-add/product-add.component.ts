@@ -13,29 +13,22 @@ import { Router } from '@angular/router';
 })
 export class ProductAddComponent implements OnInit {
 
+  router:Router;
+
   _dataService: DataService;
   categories:Category[];
   _selectedCategory:Category;
-  product:Product = new Product;
   fields:Field [] = [];
+  product:Product = new Product;
 
-  get selectedCategory(): Category {
-    return this._selectedCategory;
-  }
-  set selectedCategory(value: Category) {
-      if (value !== this._selectedCategory) {
-          this._selectedCategory = value;
-          this.onCategoryChange(value)
-      }
-  }
-
-  constructor(dataService:DataService) {
+  constructor(dataService:DataService, router:Router) {
+    this.router = router
     this._dataService = dataService;
     this._dataService.getAllCategories().subscribe(data =>{
       console.log(data)
       this.categories =data
     })
-    this.product.field_values = [];
+    this.product.fieldValues = [];
   }
 
   ngOnInit(): void {
@@ -47,8 +40,8 @@ export class ProductAddComponent implements OnInit {
       this.fields = data;
       data.length > 0 ?
       data.forEach(field =>{
-        this.product.field_values.push(new FieldValue())
-      }) : this.product.field_values = [];
+        this.product.fieldValues.push(new FieldValue())
+      }) : this.product.fieldValues = [];
     },
     error => {
       console.log(error)
@@ -56,8 +49,18 @@ export class ProductAddComponent implements OnInit {
   }
 
   submitProduct(){
+    this.product.id = 0
+    this.product.categoryId = this._selectedCategory.id
+    //this.fields == null ? this.product.fieldValues = [] : this.product.fieldValues;
+
+    console.log(this.product)
+    this.product.name == undefined ||
+      this.product.description == undefined  ||
+        this.product.price == undefined  ||
+          this.product.photoUrl == undefined ?  alert("Fill in the fields") :
     this._dataService.postProduct(this.product).subscribe(r => {
       console.log(r);
+      this.router.navigate(['/products']);
     });
   }
 

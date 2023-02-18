@@ -1,0 +1,23 @@
+<div class="container mt-5">
+  <div class="mb-3">
+    <label class="form-label">Name</label>
+    <input disabled [(ngModel)]="product.name" name="product-name" type="text" class="form-control">
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Description</label>
+    <input disabled [(ngModel)]="product.description" name="product-description" type="text" class="form-control">
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Price</label>
+    <input disabled [(ngModel)]="product.price" name="product-price" type="number" class="form-control">
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Photo url</label>
+    <input disabled [(ngModel)]="product.photoUrl" name="product-photoUrl" type="text" class="form-control">
+  </div>
+
+  <div class="mb-3" *ngFor="let values of product.fieldValues;index as i">
+    <label class="form-label">{{fields[i].name}}</label>
+    <input disabled [(ngModel)]="values.value" type="text" name="new-value" class="form-control">
+  </div>
+</div>
