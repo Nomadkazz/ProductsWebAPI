@@ -10,11 +10,11 @@ namespace ProductsWebAPI.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private readonly IDataService _productsService;
+        private readonly ICategoryService _categoryService;
 
-        public CategoriesController(IDataService productsService)
+        public CategoriesController(ICategoryService categoryService)
         {
-            _productsService = productsService;
+            _categoryService = categoryService;
         }
 
         /*
@@ -24,9 +24,9 @@ namespace ProductsWebAPI.Controllers
         public ActionResult<List<CategoryModel>> GetCategories()
         {
 
-            Console.WriteLine("IN COntroller get all");
-            Console.WriteLine(_productsService);
-            return _productsService.GetCategories();
+            Console.WriteLine("IN Controller get all");
+            Console.WriteLine(_categoryService);
+            return _categoryService.GetCategories();
         }
 
         /*
@@ -35,7 +35,7 @@ namespace ProductsWebAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult<CategoryModel> GetCategory(int id)
         {
-            var category = _productsService.GetCategoryById(id);
+            var category = _categoryService.GetCategoryById(id);
 
             if (category == null)
             {
@@ -53,7 +53,7 @@ namespace ProductsWebAPI.Controllers
         public ActionResult<int> CreateCategory(CategoryModel category)
         {
 
-            return _productsService.AddCategory(category);
+            return _categoryService.AddCategory(category);
         }
 
         /*
@@ -62,7 +62,7 @@ namespace ProductsWebAPI.Controllers
         [HttpDelete("{id}")]
         public ActionResult<int> DeleteCategory(int id)
         {
-            return _productsService.DeleteCategory(id);
+            return _categoryService.DeleteCategory(id);
         }
     }
 }

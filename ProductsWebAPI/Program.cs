@@ -12,7 +12,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ProductsContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
-builder.Services.AddScoped<IDataService, DataService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(

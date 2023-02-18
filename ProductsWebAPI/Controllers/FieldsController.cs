@@ -11,11 +11,11 @@ namespace ProductsWebAPI.Controllers
     [ApiController]
     public class FieldsController : ControllerBase
     {
-        private readonly IDataService _productsService;
+        private readonly ICategoryService _categoryService;
 
-        public FieldsController(IDataService productsService)
+        public FieldsController(ICategoryService categoryService)
         {
-            _productsService = productsService;
+            _categoryService = categoryService;
         }
 
         /*
@@ -24,25 +24,8 @@ namespace ProductsWebAPI.Controllers
         [HttpGet]
         public ActionResult<List<ProductFieldModel>> GetFields()
         {
-            return _productsService.GetFields();
+            return _categoryService.GetFields();
         }
-
-        /*
-         Returns specified field if exists, else Error 404
-         */
-        /*[HttpGet("{fieldId}")]
-        [ActionName(nameof(GetField))]
-        public ActionResult<ProductFieldModel> GetField(int fieldId)
-        {
-            var propductField = _productsService.GetProductFieldById(fieldId);
-
-            if (propductField == null)
-            {
-                return NotFound();
-            }
-
-            return propductField;
-        }*/
 
         /*
          Returns all the fields created for the category, else empty list
@@ -50,7 +33,7 @@ namespace ProductsWebAPI.Controllers
         [HttpGet("category/{categoryId}")]
         public ActionResult<List<ProductFieldModel>> GetFieldsByCategory(int categoryId)
         {
-            var fields = _productsService.GetFieldsForCategory  (categoryId);
+            var fields = _categoryService.GetFieldsForCategory(categoryId);
 
             if (fields == null || !fields.Any())
             {
@@ -72,22 +55,7 @@ namespace ProductsWebAPI.Controllers
                 return NotFound();
             }
 
-            return _productsService.AddField(field, categoryId);
+            return _categoryService.AddField(field, categoryId);
         }
-
-        /*
-         Deletes the field
-         */
-        /*[HttpDelete("{id}")]
-        public ActionResult<int> DeleteField(int id)
-        {
-            var field = _productsService.DeleteProductField(id);
-
-            if (field == 0)
-            {
-                return NotFound();
-            }
-            return field;
-        }*/
     }
 }
