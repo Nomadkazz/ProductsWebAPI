@@ -35,8 +35,6 @@ export class ProductItemComponent implements OnInit {
       })
     });
 
-
-
    }
 
   ngOnInit(): void {

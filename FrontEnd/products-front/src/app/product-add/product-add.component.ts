@@ -5,6 +5,7 @@ import { Product } from '../models/product.model';
 import { Field } from '../models/field.model';
 import { FieldValue } from '../models/field-value.model';
 import { Router } from '@angular/router';
+import { NgForm} from '@angular/forms';
 
 @Component({
   selector: 'app-product-add',
@@ -13,6 +14,7 @@ import { Router } from '@angular/router';
 })
 export class ProductAddComponent implements OnInit {
 
+  productForm: NgForm;
   router:Router;
 
   _dataService: DataService;
@@ -51,17 +53,25 @@ export class ProductAddComponent implements OnInit {
   submitProduct(){
     this.product.id = 0
     this.product.categoryId = this._selectedCategory.id
-    //this.fields == null ? this.product.fieldValues = [] : this.product.fieldValues;
 
     console.log(this.product)
-    this.product.name == undefined ||
-      this.product.description == undefined  ||
-        this.product.price == undefined  ||
-          this.product.photoUrl == undefined ?  alert("Fill in the fields") :
     this._dataService.postProduct(this.product).subscribe(r => {
       console.log(r);
       this.router.navigate(['/products']);
+    }, error =>{
+      alert("Fill in the fields")
     });
   }
 
+  processFile(image){
+    console.log(image)
+    console.log(image.target.files[0]);
+
+    let reader = new FileReader();
+    reader.readAsDataURL(image.target.files[0]);
+    reader.onload = (ev) =>{
+      console.log(reader.result)
+      this.product.photoUrl = reader.result.toString();
+    }
+  }
 }

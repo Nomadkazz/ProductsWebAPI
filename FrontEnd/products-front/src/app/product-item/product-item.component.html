@@ -1,4 +1,5 @@
-<div class="container mt-5">
+<div class="container mt-5 mb-5">
+  <h1>Product {{product.id}}</h1>
   <div class="mb-3">
     <label class="form-label">Name</label>
     <input disabled [(ngModel)]="product.name" name="product-name" type="text" class="form-control">
@@ -12,8 +13,8 @@
     <input disabled [(ngModel)]="product.price" name="product-price" type="number" class="form-control">
   </div>
   <div class="mb-3">
-    <label class="form-label">Photo url</label>
-    <input disabled [(ngModel)]="product.photoUrl" name="product-photoUrl" type="text" class="form-control">
+    <label class="form-label">Photo:</label><br>
+    <img [src]="product.photoUrl" height="200px">
   </div>
 
   <div class="mb-3" *ngFor="let values of product.fieldValues;index as i">
