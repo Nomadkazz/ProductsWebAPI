@@ -1,8 +1,8 @@
 # ProductsWebAPI
-Backend: ASP.NET Core Web API (net core 6.0, EntityFrameworkCore 7.0.3) 
-Front-End: Angular 10+, Bootstrap 5
-
-Outline of the application:
+### Backend: ASP.NET Core Web API (Net Core 6.0, EntityFrameworkCore 7.0.3) 
+### Front-End: Angular 10+, Bootstrap 5
+##
+**Outline of the application:**
 1. Категории товара
 2. Создание товара
 3. Просмотр списка товаров
