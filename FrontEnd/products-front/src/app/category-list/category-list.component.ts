@@ -33,7 +33,9 @@ export class CategoryComponent implements OnInit {
   deleteCategory(category){
     console.log(category)
     this._dataService.deleteCategory(category.id).subscribe(data =>{
-      this.getCategories()
+      data == 1 ? this.getCategories() : alert("Error while deleting");
+    },err =>{
+      console.log(err)
     })
   }
 

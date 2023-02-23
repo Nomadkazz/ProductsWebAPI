@@ -36,55 +36,44 @@ namespace ProductsWebAPI.Controllers
 
             if (product == null)
             {
-                return NotFound();
+                return NotFound("Product doesn't exists");
             }
 
             return product;
         }
 
         /*
-         Returns products in the category if exists, else Error 404
+         Returns products in the category if exists, else empty list
          */
         [HttpGet("category/{id}")]
         public ActionResult<List<ProductModel>> GetProductsByCategory(int id)
         {
-            var product = _productsService.GetProductsByCategory(id);
-
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return product;
+            return _productsService.GetProductsByCategory(id);
         }
 
         /*
-         Returns products in the categoryi f exists, else Error 404
+         Returns products by fields if exists, else empty list
          */
         [HttpGet("field/{id}")]
         public ActionResult<List<ProductModel>> GetProductsByField(int id)
         {
-            var product = _productsService.GetProductsByField(id);
-
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return product;
+            return _productsService.GetProductsByField(id);
         }
+
         /*
-         Adds a new product in to the database returns new product's Id
+         Adds a new product in to the database, returns new product's Id
          */
         [HttpPost]
         public ActionResult<int> CreateProduct(ProductModel product)
         {
-            if (product == null)
+            var reply = _productsService.AddProduct(product, product.FieldValues);
+
+            if (reply == 0)
             {
-                return NotFound();
+                return NotFound("Category doesn't exist");
             }
 
-            return _productsService.AddProduct(product, product.FieldValues);
+            return reply;
         }
 
     }

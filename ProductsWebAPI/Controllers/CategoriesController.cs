@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProductsWebAPI.ApplicationCore.Entities;
 using ProductsWebAPI.Infastructure.Interfaces;
 using ProductsWebAPI.Infastructure.Services;
 using ProductsWebAPI.Models;
@@ -23,9 +24,6 @@ namespace ProductsWebAPI.Controllers
         [HttpGet]
         public ActionResult<List<CategoryModel>> GetCategories()
         {
-
-            Console.WriteLine("IN Controller get all");
-            Console.WriteLine(_categoryService);
             return _categoryService.GetCategories();
         }
 
@@ -39,7 +37,7 @@ namespace ProductsWebAPI.Controllers
 
             if (category == null)
             {
-                return NotFound();
+                return NotFound("Category doesn't exist");
             }
 
             return category;
@@ -52,7 +50,6 @@ namespace ProductsWebAPI.Controllers
         [HttpPost]
         public ActionResult<int> CreateCategory(CategoryModel category)
         {
-
             return _categoryService.AddCategory(category);
         }
 
@@ -62,7 +59,15 @@ namespace ProductsWebAPI.Controllers
         [HttpDelete("{id}")]
         public ActionResult<int> DeleteCategory(int id)
         {
-            return _categoryService.DeleteCategory(id);
+
+            var reply = _categoryService.DeleteCategory(id);
+
+            if (reply == 0)
+            {
+                return NotFound("Category doesn't exist");
+            }
+
+            return reply;
         }
     }
 }

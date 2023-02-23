@@ -16,9 +16,8 @@ export class ProductListComponent implements OnInit {
   _dataService: DataService;
   products:Product[];
   categories:Category[];
-  fields:Field[];
   _selectedCategory:Category=null;
-  selectedField:Field;
+  selectedField:Field=null;
 
   constructor(dataService:DataService, router:Router) {
     this._dataService = dataService;
@@ -42,24 +41,11 @@ export class ProductListComponent implements OnInit {
     })
   }
 
-  getFields(){
-    this._dataService.getFieldsInCategory(this._selectedCategory.id).subscribe(data =>{
-      console.log(data)
-      this.fields =data
-      this.fields.length > 0 ? this.selectedField = this.fields[0] : this.selectedField = null ;
-    },
-    error => {
-      console.log(error)
-      this.selectedField = null
-    })
-  }
-
   onCategoryChange(newValue){
     console.log(newValue)
     if(this._selectedCategory == null){
       this.getAllProducts()
     }else{
-      this.getFields()
       this.getProductsByCategory()
     }
   }

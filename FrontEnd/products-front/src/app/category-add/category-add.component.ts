@@ -20,6 +20,7 @@ export class CategoryAddComponent implements OnInit {
   constructor(dataService:DataService,router:Router) {
     this.router = router
     this._dataService = dataService
+    this.category.fields = []
   }
 
   ngOnInit(): void {
@@ -27,27 +28,28 @@ export class CategoryAddComponent implements OnInit {
 
   newField():void{
     var field = new Field;
-    this.fields.push(field);
+    this.category.fields.push(field);
   }
 
   removeField():void{
-    this.fields.pop();
+    this.category.fields.pop();
   }
 
   submitCategory():void{
     console.log(this.category);
-    console.log(this.fields);
-    this.category.name == undefined ? alert("Fill in the fields") :
+    console.log(this.category.fields);
     this._dataService.postCategory(this.category).subscribe(r => {
       console.log(r);
-      if(this.fields.length > 0 && r != 0){
-        this.fields.forEach(field => {
+      if(this.category.fields.length > 0 && r != 0){
+        this.category.fields.forEach(field => {
           this._dataService.postField(field, r).subscribe(data =>{
             console.log(data);
             this.router.navigate(['/categories']);
           })
         })
       };
+    }, err => {
+      alert("Fill in the fields");
     });
   }
 

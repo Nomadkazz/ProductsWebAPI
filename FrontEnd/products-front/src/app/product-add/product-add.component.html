@@ -31,7 +31,7 @@
     </div>
     <h5 *ngIf="product.fieldValues.length > 0" class="mt-5">Additional fields:</h5>
     <div class="mb-3" *ngFor="let values of product.fieldValues;index as i">
-      <label class="form-label">{{fields[i].name}}</label>
+      <label class="form-label">{{_selectedCategory.fields[i].name}}</label>
       <input required  [(ngModel)]="values.value" type="text" name="new-value" class="form-control">
     </div>
     <button ng-disabled="productForm.$invalid" (click)="submitProduct()" class="mt-5 btn btn-primary">Submit</button>

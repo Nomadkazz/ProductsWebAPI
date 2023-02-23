@@ -10,6 +10,6 @@ namespace ProductsWebAPI.Models
         public float Price { get; set; }
         public string PhotoUrl { get; set; }
         public int CategoryId { get; set; }
-        public List<ProductFieldValueModel>? FieldValues { get; set; }
+        public List<ProductFieldValueModel> FieldValues { get; set; }
     }
 }

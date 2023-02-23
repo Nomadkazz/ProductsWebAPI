@@ -16,10 +16,12 @@ namespace ProductsWebAPI.Infastructure.Services
 
         public int AddProduct(ProductModel product, List<ProductFieldValueModel> productFieldValues)
         {
-            if (product.CategoryId == null || product.CategoryId == 0)
+            var category = _context.Categories.Find(product.CategoryId);
+            if (category == null || product.CategoryId == 0)
             {
                 return 0;
             }
+
             Product productEntity = new Product()
             {
                 Name = product.Name,
@@ -112,12 +114,15 @@ namespace ProductsWebAPI.Infastructure.Services
                 Description = p.Description,
                 Price = p.Price,
                 PhotoUrl = p.PhotoUrl,
-                CategoryId = p.CategoryId
+                CategoryId = p.CategoryId,
+                FieldValues = p.FieldValues.Select(fv => new ProductFieldValueModel
+                {
+                    Id = fv.Id,
+                    Value = fv.Value,
+                })
+                .ToList()
             })
                 .ToList();
-
-
-            Console.WriteLine(alist);
 
             return alist;
         }

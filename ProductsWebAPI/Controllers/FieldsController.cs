@@ -33,15 +33,7 @@ namespace ProductsWebAPI.Controllers
         [HttpGet("category/{categoryId}")]
         public ActionResult<List<ProductFieldModel>> GetFieldsByCategory(int categoryId)
         {
-            var fields = _categoryService.GetFieldsForCategory(categoryId);
-
-            if (fields == null || !fields.Any())
-            {
-                return new List<ProductFieldModel>();
-            }
-
-            return fields;
-
+            return _categoryService.GetFieldsForCategory(categoryId);
         }
 
         /*
@@ -50,12 +42,13 @@ namespace ProductsWebAPI.Controllers
         [HttpPost("category/{categoryId}")]
         public ActionResult<int> CreateField(int categoryId, ProductFieldModel field)
         {
-            if (field == null)
+            var reply = _categoryService.AddField(field, categoryId);
+            if(reply == 0)
             {
-                return NotFound();
+                return NotFound("Category doesn't exist");
             }
 
-            return _categoryService.AddField(field, categoryId);
+            return reply;
         }
     }
 }

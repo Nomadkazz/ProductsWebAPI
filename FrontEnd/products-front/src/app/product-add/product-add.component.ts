@@ -16,11 +16,10 @@ export class ProductAddComponent implements OnInit {
 
   productForm: NgForm;
   router:Router;
-
   _dataService: DataService;
+
   categories:Category[];
   _selectedCategory:Category;
-  fields:Field [] = [];
   product:Product = new Product;
 
   constructor(dataService:DataService, router:Router) {
@@ -37,16 +36,9 @@ export class ProductAddComponent implements OnInit {
   }
 
   onCategoryChange(newValue){
-    this._dataService.getFieldsInCategory(this._selectedCategory.id).subscribe(data =>{
-      console.log(data)
-      this.fields = data;
-      data.length > 0 ?
-      data.forEach(field =>{
-        this.product.fieldValues.push(new FieldValue())
-      }) : this.product.fieldValues = [];
-    },
-    error => {
-      console.log(error)
+    this.product.fieldValues = [];
+    this._selectedCategory.fields.forEach(field =>{
+      this.product.fieldValues.push(new FieldValue())
     })
   }
 

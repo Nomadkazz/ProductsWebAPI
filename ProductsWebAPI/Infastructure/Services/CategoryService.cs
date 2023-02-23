@@ -1,4 +1,5 @@
-﻿using ProductsWebAPI.ApplicationCore.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using ProductsWebAPI.ApplicationCore.Entities;
 using ProductsWebAPI.Data;
 using ProductsWebAPI.Infastructure.Interfaces;
 using ProductsWebAPI.Models;
@@ -19,6 +20,13 @@ namespace ProductsWebAPI.Infastructure.Services
             {
                 Id = c.Id,
                 Name = c.Name,
+                Fields = c.Fields.Select(pf => new ProductFieldModel
+                {
+                    Id = pf.Id,
+                    Name = pf.Name,
+
+                })
+                .ToList()
             })
                 .ToList();
 
@@ -30,19 +38,19 @@ namespace ProductsWebAPI.Infastructure.Services
         public CategoryModel GetCategoryById(int categoryId)
         {
             var category = _context.Categories.Find(categoryId);
-            //var fields = GetFieldsForCategory(categoryId);
 
-            if (category == null)
+            if (category != null)
             {
-                return null;
-            }
-            var categoryModel = new CategoryModel()
-            {
-                Id = category.Id,
-                Name = category.Name,
+                var categoryModel = new CategoryModel()
+                {
+                    Id = category.Id,
+                    Name = category.Name,
+                    Fields = GetFieldsForCategory(categoryId)
             };
 
-            return categoryModel;
+                return categoryModel;
+            }
+            return null;
         }
 
         public List<ProductFieldModel> GetFields()
@@ -53,7 +61,6 @@ namespace ProductsWebAPI.Infastructure.Services
                 Name = c.Name,
             })
                 .ToList();
-
         }
 
         public List<ProductFieldModel> GetFieldsForCategory(int categoryId)
@@ -69,7 +76,6 @@ namespace ProductsWebAPI.Infastructure.Services
 
             return alist;
         }
-
 
         public int AddCategory(CategoryModel category)
         {
@@ -109,7 +115,7 @@ namespace ProductsWebAPI.Infastructure.Services
             {
                 return 0;
             }
-            var reply = _context.Categories.Remove(category);
+            _context.Categories.Remove(category);
             _context.SaveChanges();
             return 1;
         }
